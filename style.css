@@ -1,0 +1,84 @@
+*{
+  padding: 0;
+  margin: 0;
+  --cell-gap: 4px;
+  --cell-width: 75px;
+  --correct: rgb(98, 180, 82);
+  --in-word: rgb(196, 187, 89);
+  --not-in-word: rgb(94, 94, 94);
+}
+
+body{
+  background-color: rgb(14, 14, 14);
+  color: white;
+}
+
+#wordle-container{
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--cell-gap);
+}
+
+#wordle-container > div{
+  display: flex;
+  gap: var(--cell-gap);
+}
+
+#wordle-container > div > div {
+  background-color: rgb(34, 34, 34);
+  border-radius: 3px;
+  border: 2px solid rgb(152, 152, 152);
+  color: white;
+  font-size: 0px;
+  font-family: sans-serif;
+  height: var(--cell-width);
+  line-height: var(--cell-width);
+  aspect-ratio: 1;
+  text-align: center;
+  user-select: none;
+}
+
+#wordle-container > div > div.correct{
+  background-color: var(--correct);
+  transform: rotateX(360deg);
+}
+
+#wordle-container > div > div.in-word{
+  background-color: var(--in-word);
+  transform: rotateX(360deg);
+}
+
+#wordle-container > div > div.not-in-word{
+  background-color: var(--not-in-word);
+  transform: rotateX(360deg);
+}
+
+#wordle-container > div > div.text{
+  font-size: 50px;
+}
+
+.keyboard{
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.keyboard-row{
+  display: flex;
+  gap: 5px;
+}
+
+.keyboard-row > button{
+  margin: 0;
+  min-width: 30px;
+  height: 40px;
+  padding: 0px 5px;
+  border-radius: 4px;
+  background-color: rgb(79, 79, 79);
+  color: white;
+  user-select: none;
+}
