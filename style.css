@@ -1,11 +1,19 @@
-*{
-  padding: 0;
-  margin: 0;
+:root{
   --cell-gap: 4px;
   --cell-width: 75px;
   --correct: rgb(98, 180, 82);
   --in-word: rgb(196, 187, 89);
   --not-in-word: rgb(94, 94, 94);
+  --cell-font-size: 50px;
+  --key-height: 45px;
+  --key-min-width: 32px;
+  --key-font-size: 10px;
+  --key-gap: 5px;
+}
+
+*{
+  padding: 0;
+  margin: 0;
 }
 
 body{
@@ -56,7 +64,7 @@ body{
 }
 
 #wordle-container > div > div.text{
-  font-size: 50px;
+  font-size: var(--cell-font-size);
 }
 
 .keyboard{
@@ -64,21 +72,46 @@ body{
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
+  gap: var(--key-gap);
 }
 
 .keyboard-row{
   display: flex;
-  gap: 5px;
+  gap: var(--key-gap);
 }
 
 .keyboard-row > button{
   margin: 0;
-  min-width: 30px;
-  height: 40px;
+  min-width: var(--key-min-width);
+  height: var(--key-height);
+  font-size: var(--key-font-size);
   padding: 0px 5px;
   border-radius: 4px;
   background-color: rgb(79, 79, 79);
   color: white;
   user-select: none;
+}
+
+@media screen and (max-width: 750px) {
+  :root{
+    --cell-width: 45px;
+    --cell-font-size: 30px;
+  }
+  #wordle-container > div > div{
+    border-width: 1.4px;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  :root{
+    --cell-width: 34px;
+    --cell-font-size: 18px;
+    --key-min-width: 24px;
+    --key-height: 35px;
+    --key-font-size: 8px;
+    --key-gap: 2px;
+  }
+  #wordle-container > div > div{
+    border-width: 1px;
+  }
 }
