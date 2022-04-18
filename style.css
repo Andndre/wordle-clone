@@ -18,6 +18,7 @@
 
 body{
   background-color: rgb(14, 14, 14);
+  font-family: sans-serif;
   color: white;
 }
 
@@ -48,17 +49,17 @@ body{
   user-select: none;
 }
 
-#wordle-container > div > div.correct{
+#wordle-container > div > div.correct, .key.correct{
   background-color: var(--correct);
   transform: rotateX(360deg);
 }
 
-#wordle-container > div > div.in-word{
+#wordle-container > div > div.in-word, .key.in-word{
   background-color: var(--in-word);
   transform: rotateX(360deg);
 }
 
-#wordle-container > div > div.not-in-word{
+#wordle-container > div > div.not-in-word, .key.not-in-word{
   background-color: var(--not-in-word);
   transform: rotateX(360deg);
 }
@@ -82,20 +83,79 @@ body{
 
 .keyboard-row > button{
   margin: 0;
+  border: none;
   min-width: var(--key-min-width);
   height: var(--key-height);
   font-size: var(--key-font-size);
+  font-weight: bold;
   padding: 0px 5px;
   border-radius: 4px;
-  background-color: rgb(79, 79, 79);
+  background-color: rgb(57, 57, 57);
   color: white;
+  cursor: pointer;
   user-select: none;
+  transition: all 500ms ease-out;
+}
+
+.keyboard-row > button:active{
+  background-color: rgb(154, 154, 154);
+}
+
+.center{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.popup{
+  width: 350px;
+  height: fit-content;
+  padding: 30px 20px;
+  background-color: rgb(59, 59, 59);
+  border-radius: 10px;
+  text-align: center;
+  box-sizing: border-box;
+  opacity: 0;
+  transition: all 500ms ease-out;
+  z-index: 99;
+  top: -10%;
+  transform: translate(-50%, -50%) scale(0.5);
+}
+.popup .popup-title{
+  margin-bottom: 20px;
+}
+
+.popup-actions{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 10px;
+}
+
+.popup.active{
+  top: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+}
+
+.popup .popup-action{
+  border-radius: 5px;
+  margin-top: 20px;
+  width: fit-content;
+  font-size: 1rem;
+  color: white;
+  font-weight: bold;
+  background-color: var(--correct);
+  cursor: pointer;
+  border: none;
+  padding: 10px;
 }
 
 @media screen and (max-width: 750px) {
   :root{
-    --cell-width: 45px;
-    --cell-font-size: 30px;
+    --cell-width: 50px;
+    --cell-font-size: 34px;
   }
   #wordle-container > div > div{
     border-width: 1.4px;
@@ -113,5 +173,8 @@ body{
   }
   #wordle-container > div > div{
     border-width: 1px;
+  }
+  .popup{
+    width: 250px;
   }
 }

@@ -1,15 +1,23 @@
-// TODO: Get word from user through URL search params (hashed), e.g. ?word=6f8a8eb5f2d0
-// TODO: If the URL search param is missing, use a random word from the dictionary, then hash it and redirect to the new URL
-// let param = new URLSearchParams(window.location.search);
+let param = new URLSearchParams(window.location.search);
+let w = param.get("challange");
+if (w == null || WORDS.indexOf(revert(w)) == -1) {
+	w = convert(WORDS[randInt(0, WORDS.length - 1)]);
+	if (param.has("challange")) {
+		param.delete("challange");
+		window.location.search = param.toString();
+	}
+}
 
-let word = WORDS[randInt(0, WORDS.length - 1)];
-let wordle = new Wordle(word, []);
-let end = false;
-let row = 0;
-let col = 0;
+let wordle = new Wordle(w, []);
+let pause = false;
 
-const body = document.querySelector("body")!;
-const wordle_container = document.getElementById("wordle-container")!;
+const body = $("body")! as HTMLBodyElement;
+const wordle_container = $("#wordle-container")! as HTMLDivElement;
+const popupDiv = $("#popup")! as HTMLDivElement;
+const popupTitle = $("#popup-title")! as HTMLHeadingElement;
+const popupDesc = $("#popup-desc")! as HTMLParagraphElement;
+const popupAction = $("#popup-action")! as HTMLButtonElement;
+const popupActionsDiv = $("#popup-actions")! as HTMLDivElement;
 
 window.onload = () => {
 	for (let i = 0; i < 6; i++) {
@@ -23,7 +31,7 @@ window.onload = () => {
 				delay +
 				", transform 700ms ease-out " +
 				delay +
-				", font-size 75ms ease-in-out";
+				", font-size 200ms ease-in-out";
 			wordle.board[i].push(cl);
 			div.appendChild(cl);
 		}
@@ -46,15 +54,13 @@ window.onload = () => {
 };
 
 let buttons = Array.from(document.getElementsByClassName("key"));
-console.log(buttons);
 buttons.forEach((e) => {
 	e.addEventListener("click", () => {
-		console.log("hello");
 		switch (e.innerHTML) {
 			case "ENTER":
 				enterKey();
 				break;
-			case "DEL":
+			case "BACKSPACE":
 				deleteKey();
 				break;
 			default:
@@ -65,43 +71,134 @@ buttons.forEach((e) => {
 });
 
 function enterKey() {
-	if (end) return;
-	if (row == 6) return;
-	if (col !== 5) return;
-	if (WORDS.indexOf(wordle.row(row).join("")) == -1) {
-		alert("Word doesn't exist!");
+	if (pause) return;
+	if (wordle.row == 6) return;
+	if (wordle.col !== 5) return;
+	if (WORDS.indexOf(wordle.getRow().join("")) == -1) {
+		popup(
+			"Word doesn't exist!",
+			"The word you just typed is not in the dictionary (at least in this game)",
+			"Okay",
+			resetPopup
+		);
 		return;
 	}
-	let res = wordle.guess(row);
+	let res = wordle.guess();
 	let win = true;
 	for (let idx in res) {
-		wordle.board[row][idx].classList.add(res[idx]);
+		wordle.board[wordle.row][idx].classList.add(res[idx]);
+		let letter = wordle.board[wordle.row][idx].innerHTML;
+		let key = getKeyByLetter(letter)!;
+		if (res[idx] == "correct") {
+			key.classList.remove("in-word");
+			key.classList.remove("not-in-word");
+		} else if (res[idx] == "in-word") {
+			if (!key.classList.contains("correct")) {
+				key.classList.remove("not-in-word");
+			}
+		}
+		getKeyByLetter(letter)?.classList.add(res[idx]);
 		if (res[idx] != "correct") win = false;
 	}
-	col = 0;
-	if (++row == 6 || win) {
-		end = true;
+	wordle.col = 0;
+	if (++wordle.row == 6 || win) {
 		winningScreen(win);
 	}
 	return;
 }
 
 function letterKey(letter: string) {
-	if (end) return;
-	if (row == 6) return;
-	if (col == 5) return;
-	wordle.board[row][col].innerHTML = letter.toUpperCase();
-	wordle.board[row][col].classList.add("text");
-	col++;
+	if (pause) return;
+	if (wordle.row == 6) return;
+	if (wordle.col == 5) return;
+	wordle.board.forEach;
+	wordle.board[wordle.row][wordle.col].innerHTML = letter.toUpperCase();
+	wordle.board[wordle.row][wordle.col].classList.add("text");
+	wordle.col++;
 }
 
 function deleteKey() {
-	if (end) return;
-	if (--col < 0) col = 0;
-	wordle.board[row][col].innerHTML = "";
-	wordle.board[row][col].classList.remove("text");
+	if (pause) return;
+	if (--wordle.col < 0) wordle.col = 0;
+	wordle.board[wordle.row][wordle.col].innerHTML = "";
+	wordle.board[wordle.row][wordle.col].classList.remove("text");
 }
 
 function winningScreen(win: boolean) {
-	alert("You " + (win ? "win!" : "lost!"));
+	let share = document.createElement("div");
+	share.classList.add("popup-action");
+	share.innerHTML = "Copy link";
+	share.onclick = () => {
+		resetPopup();
+		popupActionsDiv.removeChild(share);
+		navigator.clipboard
+			.writeText(
+				"https://andndre.github.io/wordle-clone?challange=" + wordle.val
+			)
+			.then(() => {
+				popup(
+					"Success",
+					"The Link was copied to your Clipboard successfuly!",
+					"Okay",
+					() => {
+						resetPopup();
+						wordle.reset();
+					}
+				);
+			})
+			.catch(() => {
+				popup(
+					"Failed",
+					"Failed to copy the Link to your Clipboard!",
+					"Okay",
+					() => {
+						resetPopup();
+						wordle.reset();
+					}
+				);
+			});
+	};
+	popupActionsDiv.appendChild(share);
+	popup(
+		"You " + (win ? "win!" : "lose!"),
+		"The correct answer is " + revert(wordle.val),
+		"Retry",
+		() => {
+			resetPopup();
+			wordle.reset();
+			popupActionsDiv.removeChild(share);
+		}
+	);
+}
+
+function popup(
+	title: string,
+	desc: string,
+	button: string,
+	action: () => void = resetPopup
+) {
+	pause = true;
+	popupTitle.innerHTML = title;
+	popupDesc.innerHTML = desc;
+	popupAction.onclick = action;
+	popupAction.innerHTML = button;
+	popupDiv.classList.add("active");
+}
+
+function $(query: string) {
+	return document.querySelector(query);
+}
+
+function getKeyByLetter(letter: string) {
+	for (let b of buttons) {
+		if (b.innerHTML == letter) {
+			return b;
+		}
+	}
+	return null;
+}
+
+function resetPopup() {
+	pause = false;
+	popupDiv.classList.remove("active");
 }
