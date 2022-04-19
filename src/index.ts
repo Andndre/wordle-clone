@@ -1,7 +1,7 @@
 let param = new URLSearchParams(window.location.search);
 let w = param.get("challange");
-if (w == null || WORDS.indexOf(revert(w)) == -1) {
-	w = convert(WORDS[randInt(0, WORDS.length - 1)]);
+if (w == null || str_binarySearch(POSSIBLE_ANSWERS, revert(w)) == -1) {
+	w = convert(POSSIBLE_ANSWERS[randInt(0, POSSIBLE_ANSWERS.length - 1)]);
 	if (param.has("challange")) {
 		param.delete("challange");
 		window.location.search = param.toString();
@@ -53,9 +53,11 @@ window.onload = () => {
 	});
 };
 
-let buttons = Array.from(document.getElementsByClassName("key"));
+let buttons = Array.from(document.getElementsByClassName("key")).map(
+	(e: Element) => e as HTMLButtonElement
+);
 buttons.forEach((e) => {
-	e.addEventListener("click", () => {
+	e.onclick = () => {
 		switch (e.innerHTML) {
 			case "ENTER":
 				enterKey();
@@ -67,14 +69,18 @@ buttons.forEach((e) => {
 				letterKey(e.innerHTML);
 				break;
 		}
-	});
+	};
+	blur();
 });
 
 function enterKey() {
 	if (pause) return;
 	if (wordle.row == 6) return;
 	if (wordle.col !== 5) return;
-	if (WORDS.indexOf(wordle.getRow().join("")) == -1) {
+	if (
+		str_binarySearch(ALLOWED_GUESSES, wordle.getRow().join("")) == -1 &&
+		str_binarySearch(POSSIBLE_ANSWERS, wordle.getRow().join("")) == -1
+	) {
 		popup(
 			"Word doesn't exist!",
 			"The word you just typed is not in the dictionary (at least in this game)",
@@ -89,15 +95,21 @@ function enterKey() {
 		wordle.board[wordle.row][idx].classList.add(res[idx]);
 		let letter = wordle.board[wordle.row][idx].innerHTML;
 		let key = getKeyByLetter(letter)!;
+
 		if (res[idx] == "correct") {
-			key.classList.remove("in-word");
-			key.classList.remove("not-in-word");
+			if (
+				!key.classList.replace("in-word", "correct") &&
+				!key.classList.replace("not-in-word", "correct")
+			) {
+				key.classList.add("correct");
+			}
 		} else if (res[idx] == "in-word") {
 			if (!key.classList.contains("correct")) {
-				key.classList.remove("not-in-word");
+				key.classList.add("in-word");
 			}
+		} else if (res[idx] == "not-in-word") {
+			if (key.classList[1] == null) key.classList.add("not-in-word");
 		}
-		getKeyByLetter(letter)?.classList.add(res[idx]);
 		if (res[idx] != "correct") win = false;
 	}
 	wordle.col = 0;
@@ -125,7 +137,7 @@ function deleteKey() {
 }
 
 function winningScreen(win: boolean) {
-	let share = document.createElement("div");
+	let share = document.createElement("button");
 	share.classList.add("popup-action");
 	share.innerHTML = "Copy link";
 	share.onclick = () => {
@@ -171,18 +183,21 @@ function winningScreen(win: boolean) {
 	);
 }
 
-function popup(
+async function popup(
 	title: string,
 	desc: string,
 	button: string,
 	action: () => void = resetPopup
 ) {
+	console.log("hello");
 	pause = true;
 	popupTitle.innerHTML = title;
 	popupDesc.innerHTML = desc;
 	popupAction.onclick = action;
 	popupAction.innerHTML = button;
 	popupDiv.classList.add("active");
+	await sleep(10);
+	popupAction.focus();
 }
 
 function $(query: string) {
@@ -199,6 +214,14 @@ function getKeyByLetter(letter: string) {
 }
 
 function resetPopup() {
+	blur();
 	pause = false;
 	popupDiv.classList.remove("active");
+}
+
+function blur() {
+	let active = document.activeElement;
+	if (active instanceof HTMLButtonElement) {
+		active.blur();
+	}
 }

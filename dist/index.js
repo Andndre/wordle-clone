@@ -1,8 +1,17 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 let param = new URLSearchParams(window.location.search);
 let w = param.get("challange");
-if (w == null || WORDS.indexOf(revert(w)) == -1) {
-    w = convert(WORDS[randInt(0, WORDS.length - 1)]);
+if (w == null || str_binarySearch(POSSIBLE_ANSWERS, revert(w)) == -1) {
+    w = convert(POSSIBLE_ANSWERS[randInt(0, POSSIBLE_ANSWERS.length - 1)]);
     if (param.has("challange")) {
         param.delete("challange");
         window.location.search = param.toString();
@@ -50,9 +59,9 @@ window.onload = () => {
         }
     });
 };
-let buttons = Array.from(document.getElementsByClassName("key"));
+let buttons = Array.from(document.getElementsByClassName("key")).map((e) => e);
 buttons.forEach((e) => {
-    e.addEventListener("click", () => {
+    e.onclick = () => {
         switch (e.innerHTML) {
             case "ENTER":
                 enterKey();
@@ -64,17 +73,18 @@ buttons.forEach((e) => {
                 letterKey(e.innerHTML);
                 break;
         }
-    });
+    };
+    blur();
 });
 function enterKey() {
-    var _a;
     if (pause)
         return;
     if (wordle.row == 6)
         return;
     if (wordle.col !== 5)
         return;
-    if (WORDS.indexOf(wordle.getRow().join("")) == -1) {
+    if (str_binarySearch(ALLOWED_GUESSES, wordle.getRow().join("")) == -1 &&
+        str_binarySearch(POSSIBLE_ANSWERS, wordle.getRow().join("")) == -1) {
         popup("Word doesn't exist!", "The word you just typed is not in the dictionary (at least in this game)", "Okay", resetPopup);
         return;
     }
@@ -85,15 +95,20 @@ function enterKey() {
         let letter = wordle.board[wordle.row][idx].innerHTML;
         let key = getKeyByLetter(letter);
         if (res[idx] == "correct") {
-            key.classList.remove("in-word");
-            key.classList.remove("not-in-word");
+            if (!key.classList.replace("in-word", "correct") &&
+                !key.classList.replace("not-in-word", "correct")) {
+                key.classList.add("correct");
+            }
         }
         else if (res[idx] == "in-word") {
             if (!key.classList.contains("correct")) {
-                key.classList.remove("not-in-word");
+                key.classList.add("in-word");
             }
         }
-        (_a = getKeyByLetter(letter)) === null || _a === void 0 ? void 0 : _a.classList.add(res[idx]);
+        else if (res[idx] == "not-in-word") {
+            if (key.classList[1] == null)
+                key.classList.add("not-in-word");
+        }
         if (res[idx] != "correct")
             win = false;
     }
@@ -124,7 +139,7 @@ function deleteKey() {
     wordle.board[wordle.row][wordle.col].classList.remove("text");
 }
 function winningScreen(win) {
-    let share = document.createElement("div");
+    let share = document.createElement("button");
     share.classList.add("popup-action");
     share.innerHTML = "Copy link";
     share.onclick = () => {
@@ -153,12 +168,17 @@ function winningScreen(win) {
     });
 }
 function popup(title, desc, button, action = resetPopup) {
-    pause = true;
-    popupTitle.innerHTML = title;
-    popupDesc.innerHTML = desc;
-    popupAction.onclick = action;
-    popupAction.innerHTML = button;
-    popupDiv.classList.add("active");
+    return __awaiter(this, void 0, void 0, function* () {
+        console.log("hello");
+        pause = true;
+        popupTitle.innerHTML = title;
+        popupDesc.innerHTML = desc;
+        popupAction.onclick = action;
+        popupAction.innerHTML = button;
+        popupDiv.classList.add("active");
+        yield sleep(10);
+        popupAction.focus();
+    });
 }
 function $(query) {
     return document.querySelector(query);
@@ -172,6 +192,13 @@ function getKeyByLetter(letter) {
     return null;
 }
 function resetPopup() {
+    blur();
     pause = false;
     popupDiv.classList.remove("active");
+}
+function blur() {
+    let active = document.activeElement;
+    if (active instanceof HTMLButtonElement) {
+        active.blur();
+    }
 }

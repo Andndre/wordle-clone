@@ -24,7 +24,7 @@ class Wordle {
             b.classList.remove("in-word");
             b.classList.remove("not-in-word");
         }
-        let w = WORDS[randInt(0, WORDS.length - 1)];
+        let w = POSSIBLE_ANSWERS[randInt(0, POSSIBLE_ANSWERS.length - 1)];
         this.val = convert(w);
     }
     getRow() {

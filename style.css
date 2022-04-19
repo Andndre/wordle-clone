@@ -1,180 +1,184 @@
-:root{
-  --cell-gap: 4px;
-  --cell-width: 75px;
-  --correct: rgb(98, 180, 82);
-  --in-word: rgb(196, 187, 89);
-  --not-in-word: rgb(94, 94, 94);
-  --cell-font-size: 50px;
-  --key-height: 45px;
-  --key-min-width: 32px;
-  --key-font-size: 10px;
-  --key-gap: 5px;
+:root {
+	--cell-gap: 4px;
+	--cell-width: 75px;
+	--correct: rgb(98, 180, 82);
+	--in-word: rgb(196, 187, 89);
+	--not-in-word: rgb(94, 94, 94);
+	--cell-font-size: 50px;
+	--key-height: 45px;
+	--key-min-width: 32px;
+	--key-font-size: 10px;
+	--key-gap: 5px;
 }
 
-*{
-  padding: 0;
-  margin: 0;
+* {
+	padding: 0;
+	margin: 0;
 }
 
-body{
-  background-color: rgb(14, 14, 14);
-  font-family: sans-serif;
-  color: white;
+body {
+	background-color: rgb(14, 14, 14);
+	font-family: sans-serif;
+	color: white;
 }
 
-#wordle-container{
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--cell-gap);
+#wordle-container {
+	margin-top: 20px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--cell-gap);
 }
 
-#wordle-container > div{
-  display: flex;
-  gap: var(--cell-gap);
+#wordle-container > div {
+	display: flex;
+	gap: var(--cell-gap);
 }
 
 #wordle-container > div > div {
-  background-color: rgb(34, 34, 34);
-  border-radius: 3px;
-  border: 2px solid rgb(152, 152, 152);
-  color: white;
-  font-size: 0px;
-  font-family: sans-serif;
-  height: var(--cell-width);
-  line-height: var(--cell-width);
-  aspect-ratio: 1;
-  text-align: center;
-  user-select: none;
+	background-color: rgb(34, 34, 34);
+	border-radius: 3px;
+	border: 2px solid rgb(152, 152, 152);
+	color: white;
+	font-size: 0px;
+	font-family: sans-serif;
+	height: var(--cell-width);
+	line-height: var(--cell-width);
+	aspect-ratio: 1;
+	text-align: center;
+	user-select: none;
 }
 
-#wordle-container > div > div.correct, .key.correct{
-  background-color: var(--correct);
-  transform: rotateX(360deg);
+#wordle-container > div > div.correct,
+.key.correct {
+	background-color: var(--correct);
+	transform: rotateX(360deg);
 }
 
-#wordle-container > div > div.in-word, .key.in-word{
-  background-color: var(--in-word);
-  transform: rotateX(360deg);
+#wordle-container > div > div.in-word,
+.key.in-word {
+	background-color: var(--in-word);
+	transform: rotateX(360deg);
 }
 
-#wordle-container > div > div.not-in-word, .key.not-in-word{
-  background-color: var(--not-in-word);
-  transform: rotateX(360deg);
+#wordle-container > div > div.not-in-word,
+.key.not-in-word {
+	background-color: var(--not-in-word);
+	transform: rotateX(360deg);
 }
 
-#wordle-container > div > div.text{
-  font-size: var(--cell-font-size);
+#wordle-container > div > div.text {
+	font-size: var(--cell-font-size);
 }
 
-.keyboard{
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--key-gap);
+.keyboard {
+	margin-top: 20px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--key-gap);
 }
 
-.keyboard-row{
-  display: flex;
-  gap: var(--key-gap);
+.keyboard-row {
+	display: flex;
+	gap: var(--key-gap);
 }
 
-.keyboard-row > button{
-  margin: 0;
-  border: none;
-  min-width: var(--key-min-width);
-  height: var(--key-height);
-  font-size: var(--key-font-size);
-  font-weight: bold;
-  padding: 0px 5px;
-  border-radius: 4px;
-  background-color: rgb(57, 57, 57);
-  color: white;
-  cursor: pointer;
-  user-select: none;
-  transition: all 500ms ease-out;
+.keyboard-row > button {
+	margin: 0;
+	border: none;
+	min-width: var(--key-min-width);
+	height: var(--key-height);
+	font-size: var(--key-font-size);
+	font-weight: bold;
+	padding: 0px 5px;
+	border-radius: 4px;
+	background-color: rgb(57, 57, 57);
+	color: white;
+	cursor: pointer;
+	user-select: none;
+	transition: all 500ms ease-out;
 }
 
-.keyboard-row > button:active{
-  background-color: rgb(154, 154, 154);
+.keyboard-row > button:active {
+	background-color: rgb(154, 154, 154);
 }
 
-.center{
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+.center {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
 }
 
-.popup{
-  width: 350px;
-  height: fit-content;
-  padding: 30px 20px;
-  background-color: rgb(59, 59, 59);
-  border-radius: 10px;
-  text-align: center;
-  box-sizing: border-box;
-  opacity: 0;
-  transition: all 500ms ease-out;
-  z-index: 99;
-  top: -10%;
-  transform: translate(-50%, -50%) scale(0.5);
+.popup {
+	width: 350px;
+	height: fit-content;
+	padding: 30px 20px;
+	background-color: rgb(59, 59, 59);
+	border-radius: 10px;
+	text-align: center;
+	box-sizing: border-box;
+	opacity: 0;
+	transition: all 500ms ease-out;
+	z-index: 99;
+	top: -10%;
+	transform: translate(-50%, -50%) scale(0.5);
 }
-.popup .popup-title{
-  margin-bottom: 20px;
-}
-
-.popup-actions{
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  gap: 10px;
+.popup .popup-title {
+	margin-bottom: 20px;
 }
 
-.popup.active{
-  top: 50%;
-  transform: translate(-50%, -50%) scale(1);
-  opacity: 1;
+.popup-actions {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	gap: 10px;
 }
 
-.popup .popup-action{
-  border-radius: 5px;
-  margin-top: 20px;
-  width: fit-content;
-  font-size: 1rem;
-  color: white;
-  font-weight: bold;
-  background-color: var(--correct);
-  cursor: pointer;
-  border: none;
-  padding: 10px;
+.popup.active {
+	top: 50%;
+	transform: translate(-50%, -50%) scale(1);
+	opacity: 1;
+}
+
+.popup .popup-action {
+	border-radius: 5px;
+	margin-top: 20px;
+	width: fit-content;
+	font-size: 1rem;
+	color: white;
+	font-weight: bold;
+	background-color: var(--correct);
+	cursor: pointer;
+	border: none;
+	padding: 10px;
+	user-select: none;
 }
 
 @media screen and (max-width: 750px) {
-  :root{
-    --cell-width: 50px;
-    --cell-font-size: 34px;
-  }
-  #wordle-container > div > div{
-    border-width: 1.4px;
-  }
+	:root {
+		--cell-width: 50px;
+		--cell-font-size: 34px;
+	}
+	#wordle-container > div > div {
+		border-width: 1.4px;
+	}
 }
 
 @media screen and (max-width: 400px) {
-  :root{
-    --cell-width: 34px;
-    --cell-font-size: 18px;
-    --key-min-width: 24px;
-    --key-height: 35px;
-    --key-font-size: 8px;
-    --key-gap: 2px;
-  }
-  #wordle-container > div > div{
-    border-width: 1px;
-  }
-  .popup{
-    width: 250px;
-  }
+	:root {
+		--cell-width: 34px;
+		--cell-font-size: 18px;
+		--key-min-width: 24px;
+		--key-height: 35px;
+		--key-font-size: 8px;
+		--key-gap: 2px;
+	}
+	#wordle-container > div > div {
+		border-width: 1px;
+	}
+	.popup {
+		width: 250px;
+	}
 }
