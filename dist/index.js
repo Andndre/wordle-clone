@@ -66,7 +66,7 @@ buttons.forEach((e) => {
             case "ENTER":
                 enterKey();
                 break;
-            case "BACKSPACE":
+            case "DEL":
                 deleteKey();
                 break;
             default:
@@ -139,37 +139,29 @@ function deleteKey() {
     wordle.board[wordle.row][wordle.col].classList.remove("text");
 }
 function winningScreen(win) {
-    let share = document.createElement("button");
-    share.classList.add("popup-action");
-    share.innerHTML = "Copy link";
-    share.onclick = () => {
-        resetPopup();
-        popupActionsDiv.removeChild(share);
-        navigator.clipboard
-            .writeText("https://andndre.github.io/wordle-clone?challange=" + wordle.val)
-            .then(() => {
-            popup("Success", "The Link was copied to your Clipboard successfuly!", "Okay", () => {
-                resetPopup();
-                wordle.reset();
-            });
-        })
-            .catch(() => {
-            popup("Failed", "Failed to copy the Link to your Clipboard!", "Okay", () => {
-                resetPopup();
-                wordle.reset();
-            });
+    try {
+        let share = document.createElement("button");
+        share.classList.add("popup-action");
+        share.innerHTML = "Copy link";
+        share.onclick = () => __awaiter(this, void 0, void 0, function* () {
+            resetPopup();
+            popupActionsDiv.removeChild(share);
+            yield navigator.clipboard.writeText("https://andndre.github.io/wordle-clone?challange=" + wordle.val);
+            wordle.reset();
         });
-    };
-    popupActionsDiv.appendChild(share);
-    popup("You " + (win ? "win!" : "lose!"), "The correct answer is " + revert(wordle.val), "Retry", () => {
-        resetPopup();
-        wordle.reset();
-        popupActionsDiv.removeChild(share);
-    });
+        popupActionsDiv.appendChild(share);
+        popup("You " + (win ? "win!" : "lose!"), "The correct answer is " + revert(wordle.val), "Retry", () => {
+            resetPopup();
+            wordle.reset();
+            popupActionsDiv.removeChild(share);
+        });
+    }
+    catch (err) {
+        wordle_container.innerHTML = "error: " + err;
+    }
 }
 function popup(title, desc, button, action = resetPopup) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log("hello");
         pause = true;
         popupTitle.innerHTML = title;
         popupDesc.innerHTML = desc;

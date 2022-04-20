@@ -62,7 +62,7 @@ buttons.forEach((e) => {
 			case "ENTER":
 				enterKey();
 				break;
-			case "BACKSPACE":
+			case "DEL":
 				deleteKey();
 				break;
 			default:
@@ -140,35 +140,13 @@ function winningScreen(win: boolean) {
 	let share = document.createElement("button");
 	share.classList.add("popup-action");
 	share.innerHTML = "Copy link";
-	share.onclick = () => {
+	share.onclick = async () => {
 		resetPopup();
 		popupActionsDiv.removeChild(share);
-		navigator.clipboard
-			.writeText(
-				"https://andndre.github.io/wordle-clone?challange=" + wordle.val
-			)
-			.then(() => {
-				popup(
-					"Success",
-					"The Link was copied to your Clipboard successfuly!",
-					"Okay",
-					() => {
-						resetPopup();
-						wordle.reset();
-					}
-				);
-			})
-			.catch(() => {
-				popup(
-					"Failed",
-					"Failed to copy the Link to your Clipboard!",
-					"Okay",
-					() => {
-						resetPopup();
-						wordle.reset();
-					}
-				);
-			});
+		await navigator.clipboard.writeText(
+			"https://andndre.github.io/wordle-clone?challange=" + wordle.val
+		);
+		wordle.reset();
 	};
 	popupActionsDiv.appendChild(share);
 	popup(
@@ -189,7 +167,6 @@ async function popup(
 	button: string,
 	action: () => void = resetPopup
 ) {
-	console.log("hello");
 	pause = true;
 	popupTitle.innerHTML = title;
 	popupDesc.innerHTML = desc;
